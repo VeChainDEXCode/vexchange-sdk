@@ -74,25 +74,25 @@ export class Token {
 export const VVET = {
   [ChainId.MAINNET]: new Token(
     ChainId.MAINNET,
-    '0x535b9a56c2f03a3658fc8787c44087574eb381fd',
+    '0x93e5fa8011612fab061ef58cbab9262d2e76407b',
     18,
-    'VVET',
-    'Veiled Vet'
+    'WVET',
+    'Wrapped VET'
   ),
   [ChainId.ROPSTEN]: new Token(
     ChainId.ROPSTEN,
-    '0x535b9a56c2f03a3658fc8787c44087574eb381fd',
+    '0x93e5fa8011612fab061ef58cbab9262d2e76407b',
     18,
-    'VVET',
-    'Veiled Vet'
+    'WVET',
+    'Wrapped VET'
   ),
   [ChainId.RINKEBY]: new Token(
     ChainId.RINKEBY,
-    '0x535b9a56c2f03a3658fc8787c44087574eb381fd',
+    '0x93e5fa8011612fab061ef58cbab9262d2e76407b',
     18,
-    'VVET',
-    'Veiled Vet'
+    'WVET',
+    'Wrapped VET'
   ),
-  [ChainId.GÖRLI]: new Token(ChainId.GÖRLI, '0x535b9a56c2f03a3658fc8787c44087574eb381fd', 18, 'VVET', 'Veiled Vet'),
-  [ChainId.KOVAN]: new Token(ChainId.KOVAN, '0x535b9a56c2f03a3658fc8787c44087574eb381fd', 18, 'VVET', 'Veiled Vet')
+  [ChainId.GÖRLI]: new Token(ChainId.GÖRLI, '0x93e5fa8011612fab061ef58cbab9262d2e76407b', 18, 'WVET', 'Wrapped Vet'),
+  [ChainId.KOVAN]: new Token(ChainId.KOVAN, '0x93e5fa8011612fab061ef58cbab9262d2e76407b', 18, 'WVET', 'Wrapped Vet')
 }
