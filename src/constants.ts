@@ -5,10 +5,7 @@ export type BigintIsh = JSBI | bigint | string
 
 export enum ChainId {
   MAINNET = 1,
-  ROPSTEN = 3,
-  RINKEBY = 4,
-  GÖRLI = 5,
-  KOVAN = 42
+  TESTNET = 3,
 }
 
 export enum TradeType {
@@ -22,7 +19,7 @@ export enum Rounding {
   ROUND_UP
 }
 
-export const FACTORY_ADDRESS = '0xd15a91ee3f57313a6129a4a58c73fcbdad34c23c'
+export const FACTORY_ADDRESS = '0xb312582c023cc4938cf0faea2fd609b46d7509a2'
 
 export const INIT_CODE_HASH = '0x597842963dd96a7950f4a0e1fc043055599d6e4e7154f8190d1ff640509e5900'
 
@@ -37,7 +34,6 @@ export const FIVE = JSBI.BigInt(5)
 export const TEN = JSBI.BigInt(10)
 export const _100 = JSBI.BigInt(100)
 export const _990 = JSBI.BigInt(990)
-export const _997 = JSBI.BigInt(997)
 export const _1000 = JSBI.BigInt(1000)
 
 export enum SolidityType {

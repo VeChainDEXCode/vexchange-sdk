@@ -1,7 +1,7 @@
 {
-  "name": "@vexchange/sdk",
+  "name": "vexchange-sdk",
   "license": "GPL-3.0-or-later",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "🛠 An SDK for building applications on top of Vexchange.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -27,11 +27,11 @@
     "@ethersproject/networks": "^5.0.0-beta.135",
     "@ethersproject/providers": "^5.0.0-beta.153",
     "@ethersproject/solidity": "^5.0.0-beta.131",
-    "@uniswap/v2-core": "^1.0.0",
-    "@vechain/connex": "^2.0.0",
+    "@types/lodash": "^4.14.171",
     "big.js": "^5.2.2",
     "decimal.js-light": "^2.5.0",
     "jsbi": "^3.1.1",
+    "lodash": "^4.17.21",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
     "toformat": "^2.0.0"

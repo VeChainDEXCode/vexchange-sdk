@@ -1,8 +1,6 @@
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
-import { getNetwork } from '@ethersproject/networks'
-import { getDefaultProvider } from '@ethersproject/providers'
-import { Contract } from '@ethersproject/contracts'
+import { find } from 'lodash'
 
 import { ChainId, SolidityType } from '../constants'
 import ERC20 from '../abis/ERC20.json'
@@ -24,14 +22,17 @@ export class Token {
   static async fetchData(
     chainId: ChainId,
     address: string,
-    provider = getDefaultProvider(getNetwork(chainId)),
+    connex: any,
     symbol?: string,
     name?: string
   ): Promise<Token> {
+    const abi = find(ERC20, { name: 'decimals' })
+    const method = connex.thor.account(address).method(abi as any)
+
     const parsedDecimals =
       typeof CACHE?.[chainId]?.[address] === 'number'
         ? CACHE[chainId][address]
-        : await new Contract(address, ERC20, provider).decimals().then((decimals: number): number => {
+        : await method.call().then(({ decoded }: any) => Number(decoded[0])).then((decimals: number) => {
             CACHE = {
               ...CACHE,
               [chainId]: {
@@ -71,28 +72,19 @@ export class Token {
   }
 }
 
-export const VVET = {
+export const WVET = {
   [ChainId.MAINNET]: new Token(
     ChainId.MAINNET,
-    '0x93e5fa8011612fab061ef58cbab9262d2e76407b',
+    '0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997',
     18,
     'WVET',
     'Wrapped VET'
   ),
-  [ChainId.ROPSTEN]: new Token(
-    ChainId.ROPSTEN,
-    '0x93e5fa8011612fab061ef58cbab9262d2e76407b',
+  [ChainId.TESTNET]: new Token(
+    ChainId.TESTNET,
+    '0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997',
     18,
     'WVET',
     'Wrapped VET'
   ),
-  [ChainId.RINKEBY]: new Token(
-    ChainId.RINKEBY,
-    '0x93e5fa8011612fab061ef58cbab9262d2e76407b',
-    18,
-    'WVET',
-    'Wrapped VET'
-  ),
-  [ChainId.GÖRLI]: new Token(ChainId.GÖRLI, '0x93e5fa8011612fab061ef58cbab9262d2e76407b', 18, 'WVET', 'Wrapped Vet'),
-  [ChainId.KOVAN]: new Token(ChainId.KOVAN, '0x93e5fa8011612fab061ef58cbab9262d2e76407b', 18, 'WVET', 'Wrapped Vet')
 }
