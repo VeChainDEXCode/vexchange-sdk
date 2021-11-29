@@ -75,14 +75,14 @@ export class Token {
 export const WVET = {
   [ChainId.MAINNET]: new Token(
     ChainId.MAINNET,
-    '0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997',
+    '0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997',
     18,
     'WVET',
     'Wrapped VET'
   ),
   [ChainId.TESTNET]: new Token(
     ChainId.TESTNET,
-    '0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997',
+    '0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997',
     18,
     'WVET',
     'Wrapped VET'
