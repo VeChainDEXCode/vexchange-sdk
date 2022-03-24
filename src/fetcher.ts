@@ -61,7 +61,7 @@ export abstract class Fetcher {
    * Fetches information about a pair and constructs a pair from the given two tokens.
    * @param tokenA first token
    * @param tokenB second token
-   * @param provider the provider to use to fetch the data
+   * @param connex the provider to use to fetch the data
    */
   public static async fetchPairData(
     tokenA: Token,
@@ -73,7 +73,7 @@ export abstract class Fetcher {
 
     const getReservesABI = find(IUniswapV2Pair.abi, { name: 'getReserves' });
     const getReservesMethod = connex.thor.account(pairAddress).method(getReservesABI);
-  
+
     const reserves = await getReservesMethod.call().then((data: any) => data.decoded)
     const { reserve0, reserve1 } = reserves;
     const balances = tokenA.sortsBefore(tokenB) ? [reserve0, reserve1] : [reserve1, reserve0]

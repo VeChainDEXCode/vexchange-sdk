@@ -33,7 +33,6 @@ export const THREE = JSBI.BigInt(3)
 export const FIVE = JSBI.BigInt(5)
 export const TEN = JSBI.BigInt(10)
 export const _100 = JSBI.BigInt(100)
-export const _990 = JSBI.BigInt(990)
 export const _1000 = JSBI.BigInt(1000)
 
 export enum SolidityType {

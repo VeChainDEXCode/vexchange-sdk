@@ -13,7 +13,6 @@ import {
   ZERO,
   ONE,
   FIVE,
-  _990,
   _1000,
   ChainId
 } from '../constants'
@@ -25,6 +24,9 @@ let PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: st
 
 export class Pair {
   public readonly liquidityToken: Token
+  // swap fee in basis points
+  // 100 means a 1% swapFee
+  public readonly swapFee: JSBI
   private readonly tokenAmounts: [TokenAmount, TokenAmount]
 
   public static getAddress(tokenA: Token, tokenB: Token): string {
@@ -46,6 +48,10 @@ export class Pair {
 
     return PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
   }
+
+  // public static getPair(tokenA: Token, tokenB: Token, connex: any): Pair {
+  //
+  // }
 
   public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount) {
     const tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
@@ -127,7 +133,7 @@ export class Pair {
     }
     const inputReserve = this.reserveOf(inputAmount.token)
     const outputReserve = this.reserveOf(inputAmount.token.equals(this.token0) ? this.token1 : this.token0)
-    const inputAmountWithFee = JSBI.multiply(inputAmount.raw, _990)
+    const inputAmountWithFee = JSBI.multiply(inputAmount.raw, JSBI.subtract(_1000, this.swapFee))
     const numerator = JSBI.multiply(inputAmountWithFee, outputReserve.raw)
     const denominator = JSBI.add(JSBI.multiply(inputReserve.raw, _1000), inputAmountWithFee)
     const outputAmount = new TokenAmount(
@@ -153,7 +159,7 @@ export class Pair {
     const outputReserve = this.reserveOf(outputAmount.token)
     const inputReserve = this.reserveOf(outputAmount.token.equals(this.token0) ? this.token1 : this.token0)
     const numerator = JSBI.multiply(JSBI.multiply(inputReserve.raw, outputAmount.raw), _1000)
-    const denominator = JSBI.multiply(JSBI.subtract(outputReserve.raw, outputAmount.raw), _990)
+    const denominator = JSBI.multiply(JSBI.subtract(outputReserve.raw, outputAmount.raw), JSBI.subtract(_1000, this.swapFee))
     const inputAmount = new TokenAmount(
       outputAmount.token.equals(this.token0) ? this.token1 : this.token0,
       JSBI.add(JSBI.divide(numerator, denominator), ONE)
