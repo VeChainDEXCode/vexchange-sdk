@@ -1,9 +1,10 @@
+import JSBI from "jsbi"
 import { find } from 'lodash'
 import { TokenAmount } from './entities/fractions/tokenAmount'
 import { Pair } from './entities/pair'
-import IUniswapV2Pair from './abis/IVexchangeV2Pair.json'
 import invariant from 'tiny-invariant'
-import ERC20 from './abis/ERC20.json'
+import ERC20 from './abis/ERC20'
+import IVexchangeV2Pair from "./abis/IVexchangeV2Pair"
 import { ChainId } from './constants'
 import { Token } from './entities/token'
 
@@ -71,12 +72,19 @@ export abstract class Fetcher {
     invariant(tokenA.chainId === tokenB.chainId, 'CHAIN_ID')
     const pairAddress = Pair.getAddress(tokenA, tokenB)
 
-    const getReservesABI = find(IUniswapV2Pair.abi, { name: 'getReserves' });
+    const getReservesABI = find(IVexchangeV2Pair.abi, { name: 'getReserves' });
     const getReservesMethod = connex.thor.account(pairAddress).method(getReservesABI);
 
-    const reserves = await getReservesMethod.call().then((data: any) => data.decoded)
-    const { reserve0, reserve1 } = reserves;
+    const reserves = (await getReservesMethod.call()).decoded
+    const { reserve0, reserve1 } = reserves
     const balances = tokenA.sortsBefore(tokenB) ? [reserve0, reserve1] : [reserve1, reserve0]
-    return new Pair(new TokenAmount(tokenA, balances[0]), new TokenAmount(tokenB, balances[1]))
+
+    const swapFeeABI = find(IVexchangeV2Pair.abi, { name: 'swapFee' })
+    const method = connex.thor.account(pairAddress).method(swapFeeABI)
+    const swapFee = JSBI.BigInt((await method.call()).decoded['0'])
+
+    return new Pair(new TokenAmount(tokenA, balances[0]),
+                    new TokenAmount(tokenB, balances[1]),
+                    swapFee)
   }
 }

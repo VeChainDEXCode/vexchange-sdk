@@ -3,7 +3,7 @@ import JSBI from 'jsbi'
 import { find } from 'lodash'
 
 import { ChainId, SolidityType } from '../constants'
-import ERC20 from '../abis/ERC20.json'
+import ERC20 from '../abis/ERC20'
 import { validateAndParseAddress, validateSolidityTypeInstance } from '../utils'
 
 let CACHE: { [chainId: number]: { [address: string]: number } } = {
