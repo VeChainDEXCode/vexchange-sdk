@@ -34,7 +34,7 @@ export abstract class Fetcher {
   public static async fetchTokenData(
     chainId: ChainId,
     address: string,
-    connex?: any,
+    connex: any,
     symbol?: string,
     name?: string,
   ): Promise<Token> {
@@ -67,7 +67,7 @@ export abstract class Fetcher {
   public static async fetchPairData(
     tokenA: Token,
     tokenB: Token,
-    connex?: any
+    connex: any
   ): Promise<Pair> {
     invariant(tokenA.chainId === tokenB.chainId, 'CHAIN_ID')
     const pairAddress = Pair.getAddress(tokenA, tokenB)
