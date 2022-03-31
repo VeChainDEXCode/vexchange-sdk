@@ -3,8 +3,8 @@ import { find } from 'lodash'
 import { TokenAmount } from './entities/fractions/tokenAmount'
 import { Pair } from './entities/pair'
 import invariant from 'tiny-invariant'
-import ERC20 from './abis/ERC20'
-import IVexchangeV2Pair from "./abis/IVexchangeV2Pair"
+import { ERC20_ABI } from './abis/ERC20'
+import { IVEXCHANGEV2PAIR_ABI } from './abis/IVexchangeV2Pair'
 import { ChainId } from './constants'
 import { Token } from './entities/token'
 
@@ -38,7 +38,7 @@ export abstract class Fetcher {
     symbol?: string,
     name?: string,
   ): Promise<Token> {
-    const abi = find(ERC20, { name: 'decimals' })
+    const abi = find(ERC20_ABI, { name: 'decimals' })
     const method = connex.thor.account(address).method(abi as any)
 
     const parsedDecimals =
@@ -72,16 +72,17 @@ export abstract class Fetcher {
     invariant(tokenA.chainId === tokenB.chainId, 'CHAIN_ID')
     const pairAddress = Pair.getAddress(tokenA, tokenB)
 
-    const getReservesABI = find(IVexchangeV2Pair.abi, { name: 'getReserves' });
+    const getReservesABI = find(IVEXCHANGEV2PAIR_ABI.abi, { name: 'getReserves' });
     const getReservesMethod = connex.thor.account(pairAddress).method(getReservesABI);
 
     const reserves = (await getReservesMethod.call()).decoded
     const { reserve0, reserve1 } = reserves
     const balances = tokenA.sortsBefore(tokenB) ? [reserve0, reserve1] : [reserve1, reserve0]
 
-    const swapFeeABI = find(IVexchangeV2Pair.abi, { name: 'swapFee' })
+    const swapFeeABI = find(IVEXCHANGEV2PAIR_ABI.abi, { name: 'swapFee' })
     const method = connex.thor.account(pairAddress).method(swapFeeABI)
-    const swapFee = JSBI.BigInt((await method.call()).decoded['0'])
+    const result = await method.call()
+    const swapFee = JSBI.BigInt(result.decoded['0'])
 
     return new Pair(new TokenAmount(tokenA, balances[0]),
                     new TokenAmount(tokenB, balances[1]),
