@@ -1,9 +1,10 @@
+import JSBI from "jsbi"
 import { find } from 'lodash'
 import { TokenAmount } from './entities/fractions/tokenAmount'
 import { Pair } from './entities/pair'
-import IUniswapV2Pair from './abis/IVexchangeV2Pair.json'
 import invariant from 'tiny-invariant'
-import ERC20 from './abis/ERC20.json'
+import { ERC20_ABI } from './abis/ERC20'
+import { IVEXCHANGEV2PAIR_ABI } from './abis/IVexchangeV2Pair'
 import { ChainId } from './constants'
 import { Token } from './entities/token'
 
@@ -33,11 +34,11 @@ export abstract class Fetcher {
   public static async fetchTokenData(
     chainId: ChainId,
     address: string,
-    connex?: any,
+    connex: any,
     symbol?: string,
     name?: string,
   ): Promise<Token> {
-    const abi = find(ERC20, { name: 'decimals' })
+    const abi = find(ERC20_ABI, { name: 'decimals' })
     const method = connex.thor.account(address).method(abi as any)
 
     const parsedDecimals =
@@ -61,22 +62,30 @@ export abstract class Fetcher {
    * Fetches information about a pair and constructs a pair from the given two tokens.
    * @param tokenA first token
    * @param tokenB second token
-   * @param provider the provider to use to fetch the data
+   * @param connex the provider to use to fetch the data
    */
   public static async fetchPairData(
     tokenA: Token,
     tokenB: Token,
-    connex?: any
+    connex: any
   ): Promise<Pair> {
     invariant(tokenA.chainId === tokenB.chainId, 'CHAIN_ID')
     const pairAddress = Pair.getAddress(tokenA, tokenB)
 
-    const getReservesABI = find(IUniswapV2Pair.abi, { name: 'getReserves' });
+    const getReservesABI = find(IVEXCHANGEV2PAIR_ABI.abi, { name: 'getReserves' });
     const getReservesMethod = connex.thor.account(pairAddress).method(getReservesABI);
-  
-    const reserves = await getReservesMethod.call().then((data: any) => data.decoded)
-    const { reserve0, reserve1 } = reserves;
+
+    const reserves = (await getReservesMethod.call()).decoded
+    const { reserve0, reserve1 } = reserves
     const balances = tokenA.sortsBefore(tokenB) ? [reserve0, reserve1] : [reserve1, reserve0]
-    return new Pair(new TokenAmount(tokenA, balances[0]), new TokenAmount(tokenB, balances[1]))
+
+    const swapFeeABI = find(IVEXCHANGEV2PAIR_ABI.abi, { name: 'swapFee' })
+    const method = connex.thor.account(pairAddress).method(swapFeeABI)
+    const result = await method.call()
+    const swapFee = JSBI.BigInt(result.decoded['0'])
+
+    return new Pair(new TokenAmount(tokenA, balances[0]),
+                    new TokenAmount(tokenB, balances[1]),
+                    swapFee)
   }
 }

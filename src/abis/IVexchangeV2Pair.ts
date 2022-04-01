@@ -1,4 +1,4 @@
-{
+export const IVEXCHANGEV2PAIR_ABI = {
   "abi": [
     {
       "anonymous": false,

@@ -3,7 +3,7 @@ import JSBI from 'jsbi'
 import { find } from 'lodash'
 
 import { ChainId, SolidityType } from '../constants'
-import ERC20 from '../abis/ERC20.json'
+import { ERC20_ABI }from '../abis/ERC20'
 import { validateAndParseAddress, validateSolidityTypeInstance } from '../utils'
 
 let CACHE: { [chainId: number]: { [address: string]: number } } = {
@@ -26,7 +26,7 @@ export class Token {
     symbol?: string,
     name?: string
   ): Promise<Token> {
-    const abi = find(ERC20, { name: 'decimals' })
+    const abi = find(ERC20_ABI, { name: 'decimals' })
     const method = connex.thor.account(address).method(abi as any)
 
     const parsedDecimals =
