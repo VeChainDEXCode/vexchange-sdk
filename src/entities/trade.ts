@@ -76,8 +76,8 @@ export interface BestTradeOptions {
 export class Trade {
   public readonly route: Route
   public readonly tradeType: TradeType
-  public readonly inputAmount: TokenAmount
-  public readonly outputAmount: TokenAmount
+  public inputAmount: TokenAmount
+  public outputAmount: TokenAmount
   public readonly executionPrice: Price
   public readonly nextMidPrice: Price
   public readonly slippage: Percent

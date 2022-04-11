@@ -11,7 +11,7 @@ import { Fraction } from './fraction'
 const Big = toFormat(_Big)
 
 export class TokenAmount extends Fraction {
-  public readonly token: Token
+  public token: Token
 
   // amount _must_ be raw, i.e. in the native representation
   constructor(token: Token, amount: BigintIsh) {
